@@ -20,7 +20,7 @@ def wgt_nx_graph(Graph,weight_field):
     G3 = nx.Graph()
     G3.add_nodes_from(pos.keys())
 	
-	# Assign weight field to the graph
+    # Assign weight field to the graph
     edg=Graph.edges(data=weight_field)
     edgList=[]
     for sl in edg:
@@ -34,7 +34,7 @@ def wgt_nx_graph(Graph,weight_field):
     G3.add_weighted_edges_from(edgList)
     return(G3)
    
- # Function to convert shapefile into non weighted networkx graph   
+# Function to convert shapefile into non weighted networkx graph   
 def non_wgt_nx_graph(Graph):
     G3 = nx.Graph()
     G3.add_nodes_from(pos.keys())
@@ -43,7 +43,7 @@ def non_wgt_nx_graph(Graph):
     for sl in edg:
         t=tuple(k for k,v in pos.items() if v in sl)
         x=list(t)
-		# Remove  eroneous edges if any
+	# Remove  eroneous edges if any
         if(len(x)>1):
             edgList.append(tuple(x))
 
@@ -63,7 +63,7 @@ def wgt_ig_graph(nx_graph,weight_field):
             edgList.append(tuple(x))
             wgtList.append(sl[2])
 	
-	#Make empty igraph graph and add edges and vertices
+    # Make empty igraph graph and add edges and vertices
     G4=ig.Graph()
     G4.add_vertices(pos.keys())
     G4.add_edges(edgList)
@@ -81,7 +81,7 @@ def louvain(nxGraph,out_path):
         nodeCom.append(t)
     GR=nx.Graph()
     GR.add_nodes_from(nodeCom)
-	#export community nodes into shapefile
+    #export community nodes into shapefile
     nx.write_shp(GR,out_path)
 
 # Function for Leidenalg community detection
@@ -101,14 +101,14 @@ def leidenalg(Graph,path):
     GR.add_nodes_from(nodeShp)
     nx.write_shp(GR,path)
 	
-	# modularity score of the detected communities
+   # modularity score of the detected communities
     modularity=Graph.modularity(partition,weights='weight')
     print(modularity)
     
 # Function for fastgreedy community detection    
 def fastgreedy(Graph,path):
     partition=Graph.community_fastgreedy(weights='weight')
-	# partition with optimal modularity
+    # partition with optimal modularity
     x=partition.as_clustering(n=None)
     nodeShp=[]
     comm=0
@@ -132,9 +132,15 @@ nx_graph=wgt_nx_graph(G2,'weight_t')
 #igraph graph
 ig_graph=wgt_ig_graph(G2,'weight_t')
 
+#louvain 
+louvain(nx_graph,out_path_shp)
 
+#leidenalg
+leidenalg(ig_graph,out_path_shp)
+
+#fastgreedy
 fastgreedy(ig_graph,out_path_shp)
-# print('success')
+
 
 
 
