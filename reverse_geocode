@@ -1,0 +1,10 @@
+#Reverse Geocode the centroid coordinates of the core areas communities
+import geocoder as g
+import networkx as nx
+G=nx.read_shp('D:/Master_geospatial/Thesis/work/Results/summary/lev1_core_centre_wgs.shp')
+GR=nx.Graph()
+for n in G.nodes():
+    coor=list(n)
+    res=g.osm(list(reversed(coor)),method='reverse')
+    GR.add_node(tuple(n),city=res.city)
+nx.write_shp(GR,'D:/Master_geospatial/Thesis/work/Results/core_city_names.shp')
